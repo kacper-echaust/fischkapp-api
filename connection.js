@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb')
-const URI_ID = process.env.URI || 'kacper:kacper'
+const MONGODB_URI = process.env.URI || 'mongodb+srv://kacper:kacper@cluster0.s1h02.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 async function listDatabases(client) {
 	databasesList = await client.db().admin().listDatabases()
 
@@ -8,7 +8,7 @@ async function listDatabases(client) {
 }
 
 const main = async () => {
-	const uri = `mongodb+srv://${URI_ID}@cluster0.s1h02.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+	const uri = MONGODB_URI
 	const client = new MongoClient(uri)
 	try {
 		await client.connect()
