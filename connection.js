@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb')
-const MONGODB_URI = process.env.URI || 'mongodb+srv://kacper:kacper@cluster0.s1h02.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://kacper:kacper@cluster0.s1h02.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+
 async function listDatabases(client) {
 	databasesList = await client.db().admin().listDatabases()
 
@@ -14,7 +15,7 @@ const main = async () => {
 		await client.connect()
 		await listDatabases(client)
 	} catch (e) {
-		console.error(e)
+		console.error('Failed to connect to the database:',e)
 	} finally {
 		await client.close()
 	}
