@@ -18,7 +18,7 @@ app.put('/cards/:id', async (req, res) => {
 		const { front, back, tags } = req.body
 		const updatedCard = await Card.findByIdAndUpdate(req.params.id, { front, back, tags }, { new: true })
 		if (!updatedCard) {
-			res.status(404).send({ message: 'Card not found' })
+			return res.status(404).send({ message: 'Card not found' })
 		}
 		res.status(200).send(updatedCard)
 	} catch (error) {
