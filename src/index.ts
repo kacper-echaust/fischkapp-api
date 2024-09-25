@@ -54,3 +54,21 @@ app.get('/cards/tags/:tag', async (req, res) => {
 		res.status(500).send('Internal Server Error')
 	}
 })
+app.delete('/cards/:id', async (req, res) => {
+	const fiveMinutes = 5 * 60 * 1000
+	const currentTime = Date.now()
+	try {
+		const cardToDelete = await Card.findById(req.params.id)
+
+		if (!cardToDelete) {
+			return res.status(404).send({ message: 'Not found' })
+		}
+		if (currentTime - cardToDelete.createdAt > fiveMinutes) {
+			return res.status(403).send({ message: 'Cannot delete card after 5 minutes' })
+		}
+		await Card.deleteOne(cardToDelete)
+	} catch (error) {
+		console.error(error)
+		res.status(500).send({ message: 'Internal Server Error' })
+	}
+})
