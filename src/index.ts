@@ -13,3 +13,11 @@ app.post('/card', async (req, res) => {
 		console.error(error)
 	}
 })
+app.put('/cards/:id', async (req, res) => {
+	try {
+		const { front, back, _id } = req.body
+		await Card.findAndUpdateById(_id, { front, back }, { new: true })
+	} catch (error) {
+		console.error(error)
+	}
+})
