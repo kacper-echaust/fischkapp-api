@@ -29,7 +29,7 @@ app.put('/cards/:id', async (req, res) => {
 
 app.get('/cards', async (req, res) => {
 	try {
-		const cards = await Card.find({}).sort({ timestamps: 1 })
+		const cards = await Card.find({}).sort({ timestamps: -1 })
 		res.send(cards)
 	} catch (error) {
 		console.error(error)
@@ -38,7 +38,7 @@ app.get('/cards', async (req, res) => {
 })
 app.get('/cards/author/:author', async (req, res) => {
 	try {
-		const cards = await Card.find({ author: req.params.author }).sort({ timestamps: 1 })
+		const cards = await Card.find({ author: req.params.author }).sort({ timestamps: -1 })
 		res.send(cards)
 	} catch (error) {
 		console.error(error)
@@ -47,7 +47,7 @@ app.get('/cards/author/:author', async (req, res) => {
 })
 app.get('/cards/tags/:tag', async (req, res) => {
 	try {
-		const cards = await Card.find({ tags: req.params.tag }).sort({ timestamps: 1 })
+		const cards = await Card.find({ tags: req.params.tag }).sort({ timestamps: -1 })
 		res.send(cards)
 	} catch (error) {
 		console.error(error)
