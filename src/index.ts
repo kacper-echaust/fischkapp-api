@@ -15,8 +15,10 @@ app.post('/card', async (req, res) => {
 })
 app.put('/cards/:id', async (req, res) => {
 	try {
-		const { front, back, _id } = req.body
-		await Card.findAndUpdateById(_id, { front, back }, { new: true })
+		const { front, back, _id,tags } = req.body
+		await Card.findByIdAndUpdate(_id, { front, back ,tags}, { new: true }, err => {
+			if (err) return res.status(404)
+		})
 	} catch (error) {
 		console.error(error)
 	}
