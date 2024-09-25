@@ -16,9 +16,11 @@ app.post('/card', async (req, res) => {
 app.put('/cards/:id', async (req, res) => {
 	try {
 		const { front, back, tags } = req.body
-		await Card.findByIdAndUpdate(req.params.id, { front, back, tags }, { new: true }, err => {
-			if (err) return res.status(404).send({ message: 'Card not found' })
-		})
+		const updatedCard = await Card.findByIdAndUpdate(req.params.id, { front, back, tags }, { new: true })
+		if (!updatedCard) {
+			res.status(404).send({ message: 'Card not found' })
+		}
+		res.status(200).send(updatedCard)
 	} catch (error) {
 		console.error(error)
 		res.status(500).send({ message: 'Internal server error' })
