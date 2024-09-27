@@ -1,6 +1,9 @@
 import { Card } from './models/cardSchema'
 const express = require('express')
 const app = express()
+const cors = require('cors')
+
+app.use(cors())
 
 app.post('/card', async (req, res) => {
 	try {
