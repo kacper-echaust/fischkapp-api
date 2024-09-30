@@ -17,7 +17,7 @@ const corsOptions = {
 		if(authorizationHeader === 'pss-this-is-my-secret'){
 			callback(null,true)
 		}else{
-			callback(new Error('Unauthorized'))
+			req.res.status(401).send('Unauthorized')
 		}
 	}
 	}
