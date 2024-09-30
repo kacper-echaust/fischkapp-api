@@ -3,15 +3,24 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
+const checkAuthorization = (req, res, next) => {
+	const authorizationHeader = req.get('Authorization')
+
+	if (authorizationHeader === 'pss-this-is-my-secret') {
+		next()
+	} else {
+		res.status(401).send('Unauthorized')
+	}
+}
+app.use(checkAuthorization)
 const allowedOrigin = process.env.ALLOWED_ORIGIN
 const corsOptions = {
-	origin: (origin,callback) => {
-		if(origin === allowedOrigin){
-			callback(null,true)
-		} else{
+	origin: (origin, callback) => {
+		if (origin === allowedOrigin) {
+			callback(null, true)
+		} else {
 			callback(new Error('Not allowed by CORS'))
 		}
-	}
 	},
 }
 
