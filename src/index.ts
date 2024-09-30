@@ -11,9 +11,16 @@ const corsOptions = {
 		} else{
 			callback(new Error('Not allowed by CORS'))
 		}
-	}
 	},
-}
+	allowedHeaders: (req,callback) => {
+		const authorizationHeader = req.get('Authorization')
+		if(authorizationHeader === 'pss-this-is-my-secret'){
+			callback(null,true)
+		}else{
+			callback(new Error('Unauthorized'))
+		}
+	}
+	}
 
 app.use(cors(corsOptions))
 
