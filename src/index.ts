@@ -9,7 +9,7 @@ const checkAuthorization = (req, res, next) => {
 	if (authorizationHeader === 'pss-this-is-my-secret') {
 		next()
 	} else {
-		res.status(401).send('Unathorized')
+		res.status(401).send('Unauthorized')
 	}
 }
 app.use(checkAuthorization)
