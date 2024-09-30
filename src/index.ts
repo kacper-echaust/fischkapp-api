@@ -3,7 +3,19 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
-app.use(cors())
+const allowedOrigin = process.env.ALLOWED_ORIGIN
+const corsOptions = {
+	origin: (origin,callback) => {
+		if(origin === allowedOrigin){
+			callback(null,origin)
+		} else{
+			callback(new Error('Not allowed by CORS'))
+		}
+	}
+	},
+}
+
+app.use(cors(corsOptions))
 
 app.post('/card', async (req, res) => {
 	try {
