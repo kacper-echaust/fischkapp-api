@@ -1,9 +1,10 @@
+import { NextFunction, Request, Response } from 'express'
 import { Card } from './models/cardSchema'
-const express = require('express')
-const app = express()
-const cors = require('cors')
+import express from 'express'
+export const app = express()
+import cors from 'cors'
 
-const checkAuthorization = (req, res, next) => {
+const checkAuthorization = (req: Request, res: Response, next: NextFunction) => {
 	const authorizationHeader = req.get('Authorization')
 
 	if (authorizationHeader === 'pss-this-is-my-secret') {
@@ -15,7 +16,7 @@ const checkAuthorization = (req, res, next) => {
 app.use(checkAuthorization)
 const allowedOrigin = process.env.ALLOWED_ORIGIN
 const corsOptions = {
-	origin: (origin, callback) => {
+	origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
 		if (origin === allowedOrigin) {
 			callback(null, true)
 		} else {
@@ -87,10 +88,10 @@ app.delete('/cards/:id', async (req, res) => {
 		if (!cardToDelete) {
 			return res.status(404).send({ message: 'Not found' })
 		}
-		if (currentTime - cardToDelete.createdAt > fiveMinutes) {
+		if (currentTime - Number(cardToDelete.createdAt) > fiveMinutes) {
 			return res.status(403).send({ message: 'Cannot delete card after 5 minutes' })
 		}
-		await Card.deleteOne(cardToDelete)
+		await Card.deleteOne({ _id: cardToDelete._id })
 	} catch (error) {
 		console.error(error)
 		res.status(500).send({ message: 'Internal Server Error' })
