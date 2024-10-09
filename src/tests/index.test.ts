@@ -48,7 +48,7 @@ describe('flashcards', () => {
 				const data = res.body
 				expect(res.status).toBe(200)
 				expect(data).toBeInstanceOf(Array)
-				expect(filteredCardsByTag.length).toEqual(data.length)
+				expect(data.length).toEqual(filteredCardsByTag.length)
 				
 			})
 		})
