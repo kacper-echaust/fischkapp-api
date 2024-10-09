@@ -56,5 +56,5 @@ afterAll(async () => {
 })
 beforeEach(async () => {
 	await mongoose.connection.dropDatabase()
-	Card.insertMany(initialCardsMock)
+	await Card.insertMany(initialCardsMock)
 })

@@ -26,11 +26,8 @@ describe('flashcards', () => {
 				const filteredAuthor = initialCardsMock.filter(card => {
 					return card.author === 'author1'
 				})
-
 				const res = await request(app).get('/cards/author/author1').set('Authorization', AUTHORIZATION_KEY)
 				const data = res.body
-				console.log(res.body)
-				console.log(filteredAuthor)
 				expect(res.status).toBe(200)
 				expect(data).toBeInstanceOf(Array)
 				expect(data.length).toEqual(filteredAuthor.length)
@@ -38,7 +35,21 @@ describe('flashcards', () => {
 				const sortedData = [...data].sort((a, b) => {
 					return Date.parse(a.createdAt) - Date.parse(b.createdAt)
 				})
-				expect(initialCardsMock).toEqual(sortedData)
+				expect(filteredAuthor).toEqual(sortedData)
+			})
+		})
+		describe('get cards by tags route', () => {
+			it('Function returns the correct number of flashcards with the requested tag.', async () => {
+				const filteredCardsByTag = initialCardsMock.filter(card => {
+					return card.tags.includes('bla')
+				})
+
+				const res = await request(app).get('/cards/tags/bla').set('Authorization', AUTHORIZATION_KEY)
+				const data = res.body
+				expect(res.status).toBe(200)
+				expect(data).toBeInstanceOf(Array)
+				expect(filteredCardsByTag.length).toEqual(data.length)
+				
 			})
 		})
 	})
