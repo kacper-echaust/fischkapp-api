@@ -49,7 +49,20 @@ describe('flashcards', () => {
 				expect(res.status).toBe(200)
 				expect(data).toBeInstanceOf(Array)
 				expect(data.length).toEqual(filteredCardsByTag.length)
-				
+			})
+		})
+	})
+	describe('creating cards', () => {
+		describe('post card', () => {
+			it('function returns status code 201 and create new flashcard with the correct fields', async () => {
+				const res = await request(app)
+					.post('/card')
+					.send({ front: 'front', back: 'back' })
+					.set('Authorization', AUTHORIZATION_KEY)
+				console.log(res.body)
+				expect(res.status).toBe(201)
+				expect(res.body.front).toEqual('front')
+				expect(res.body.back).toEqual('back')
 			})
 		})
 	})

@@ -32,8 +32,8 @@ app.post('/card', async (req, res) => {
 		const { front, back, author, tags } = req.body
 		const existingCard = await Card.findOne({ front })
 		if (existingCard) return res.json({ message: 'This front value already exist' })
-		const newCard = await new Card({ front, back, author, tags })
-		res.json(newCard)
+		const newCard = new Card({ front, back, author, tags })
+		res.status(201).json(newCard)
 	} catch (error) {
 		console.error(error)
 	}
