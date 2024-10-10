@@ -49,7 +49,28 @@ describe('flashcards', () => {
 				expect(res.status).toBe(200)
 				expect(data).toBeInstanceOf(Array)
 				expect(data.length).toEqual(filteredCardsByTag.length)
-				
+			})
+		})
+	})
+	describe('creating cards', () => {
+		describe('post card', () => {
+			it('function returns status code 201 and create new flashcard with the correct fields', async () => {
+				const res = await request(app)
+					.post('/card')
+					.send({ front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] })
+					.set('Content-Type', 'application/json')
+					.set('Accept', 'application/json')
+					.set('Authorization', AUTHORIZATION_KEY)
+				expect(res.status).toBe(201)
+				expect({ front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] })
+
+				const res2 = await request(app)
+					.post('/card')
+					.send(initialCardsMock[0].front)
+					.set('Content-Type', 'application/json')
+					.set('Accept', 'application/json')
+					.set('Authorization', AUTHORIZATION_KEY)
+				expect(res2.status).toBe(400)
 			})
 		})
 	})

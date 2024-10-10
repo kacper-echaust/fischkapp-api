@@ -26,14 +26,14 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
-
+app.use(express.json())
 app.post('/card', async (req, res) => {
 	try {
 		const { front, back, author, tags } = req.body
 		const existingCard = await Card.findOne({ front })
-		if (existingCard) return res.json({ message: 'This front value already exist' })
-		const newCard = await new Card({ front, back, author, tags })
-		res.json(newCard)
+		if (existingCard) return res.status(400)
+		const newCard = new Card({ front, back, author, tags })
+		res.status(201).json(newCard)
 	} catch (error) {
 		console.error(error)
 	}
