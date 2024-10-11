@@ -46,6 +46,7 @@ app.put('/cards/:id', async (req, res) => {
 			return res.status(404).send({ message: 'Card not found' })
 		}
 		res.status(200).send(updatedCard)
+		return updatedCard
 	} catch (error) {
 		console.error(error)
 		res.status(500).send({ message: 'Internal server error' })

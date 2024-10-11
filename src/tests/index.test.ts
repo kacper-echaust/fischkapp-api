@@ -75,4 +75,30 @@ describe('flashcards', () => {
 			})
 		})
 	})
+	describe('editing cards', () => {
+		describe('update card by id', () => {
+			it('function return code 200 and updates the requested flashcard with the correct fields', async () => {
+				const res = await request(app)
+					.put(`/cards/${initialCardsMock[0]._id}`)
+					.send({ front: 'new front value', back: 'new back value', tags: ['new tag', 'new tag 2'] })
+					.set('Authorization', AUTHORIZATION_KEY)
+					.set('Content-Type', 'application/json')
+					.set('Accept', 'application/json')
+				expect(res.status).toBe(200)
+				expect({ front: 'new front value', back: 'new back value', tags: ['new tag', 'new tag 2'] })
+			})
+		})
+		describe('return updated card', () => {
+			it('function return the updated flashcard', async () => {
+				const res = await request(app).get('/cards').set('Authorization', AUTHORIZATION_KEY)
+				const data = res.body
+
+				expect(data).toContain({
+					front: 'new front value',
+					back: 'new back value',
+					tags: ['new tag', 'new tag 2'],
+				})
+			})
+		})
+	})
 })
