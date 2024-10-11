@@ -64,7 +64,7 @@ describe('flashcards', () => {
 				expect(res.status).toBe(201)
 				expect({ front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] })
 			})
-			it('function returns status code 400 when card with specific front value already exist', async () => {
+			it('function return status code 400 when card with specific front value already exist', async () => {
 				const res2 = await request(app)
 					.post('/card')
 					.send(initialCardsMock[0].front)
