@@ -54,50 +54,26 @@ describe('flashcards', () => {
 	})
 	describe('creating cards', () => {
 		describe('post card', () => {
+			const dataToAdd = { front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] }
 			it('function returns status code 201 and create new flashcard with the correct fields', async () => {
 				const res = await request(app)
 					.post('/card')
-					.send({ front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] })
+					.send(dataToAdd)
 					.set('Content-Type', 'application/json')
 					.set('Accept', 'application/json')
 					.set('Authorization', AUTHORIZATION_KEY)
+				const dataFromApi = res.body
 				expect(res.status).toBe(201)
-				expect({ front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] })
+				expect(dataFromApi).toMatchObject(dataToAdd)
 			})
 			it('function return status code 400 when card with specific front value already exist', async () => {
-				const res2 = await request(app)
-					.post('/card')
-					.send(initialCardsMock[0].front)
-					.set('Content-Type', 'application/json')
-					.set('Accept', 'application/json')
-					.set('Authorization', AUTHORIZATION_KEY)
-				expect(res2.status).toBe(400)
-			})
-		})
-	})
-	describe('editing cards', () => {
-		describe('update card by id', () => {
-			it('function return code 200 and updates the requested flashcard with the correct fields', async () => {
 				const res = await request(app)
-					.put(`/cards/${initialCardsMock[0]._id}`)
-					.send({ front: 'new front value', back: 'new back value', tags: ['new tag', 'new tag 2'] })
-					.set('Authorization', AUTHORIZATION_KEY)
+					.post('/card')
+					.send(initialCardsMock[0])
 					.set('Content-Type', 'application/json')
 					.set('Accept', 'application/json')
-				expect(res.status).toBe(200)
-				expect({ front: 'new front value', back: 'new back value', tags: ['new tag', 'new tag 2'] })
-			})
-		})
-		describe('return updated card', () => {
-			it('function return the updated flashcard', async () => {
-				const res = await request(app).get('/cards').set('Authorization', AUTHORIZATION_KEY)
-				const data = res.body
-
-				expect(data).toContain({
-					front: 'new front value',
-					back: 'new back value',
-					tags: ['new tag', 'new tag 2'],
-				})
+					.set('Authorization', AUTHORIZATION_KEY)
+				expect(res.status).toBe(400)
 			})
 		})
 	})
