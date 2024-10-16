@@ -26,14 +26,13 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
-
+app.use(express.json())
 app.post('/card', async (req, res) => {
 	try {
-		const { front, back, author, tags } = req.body
-		const existingCard = await Card.findOne({ front })
-		if (existingCard) return res.json({ message: 'This front value already exist' })
-		const newCard = await new Card({ front, back, author, tags })
-		res.json(newCard)
+		const existingCard = await Card.find({ front: req.body.front })
+		if (existingCard.length > 0) return res.status(400).json({ message: 'Card already exist' })
+		const newCard = new Card(req.body)
+		res.status(201).json(newCard)
 	} catch (error) {
 		console.error(error)
 	}
@@ -46,6 +45,7 @@ app.put('/cards/:id', async (req, res) => {
 			return res.status(404).send({ message: 'Card not found' })
 		}
 		res.status(200).send(updatedCard)
+		return updatedCard
 	} catch (error) {
 		console.error(error)
 		res.status(500).send({ message: 'Internal server error' })

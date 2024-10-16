@@ -49,7 +49,31 @@ describe('flashcards', () => {
 				expect(res.status).toBe(200)
 				expect(data).toBeInstanceOf(Array)
 				expect(data.length).toEqual(filteredCardsByTag.length)
-				
+			})
+		})
+	})
+	describe('creating cards', () => {
+		describe('post card', () => {
+			const dataToAdd = { front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] }
+			it('function returns status code 201 and create new flashcard with the correct fields', async () => {
+				const res = await request(app)
+					.post('/card')
+					.send(dataToAdd)
+					.set('Content-Type', 'application/json')
+					.set('Accept', 'application/json')
+					.set('Authorization', AUTHORIZATION_KEY)
+				const dataFromApi = res.body
+				expect(res.status).toBe(201)
+				expect(dataFromApi).toMatchObject(dataToAdd)
+			})
+			it('function return status code 400 when card with specific front value already exist', async () => {
+				const res = await request(app)
+					.post('/card')
+					.send(initialCardsMock[0])
+					.set('Content-Type', 'application/json')
+					.set('Accept', 'application/json')
+					.set('Authorization', AUTHORIZATION_KEY)
+				expect(res.status).toBe(400)
 			})
 		})
 	})
