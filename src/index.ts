@@ -92,6 +92,7 @@ app.delete('/cards/:id', async (req, res) => {
 			return res.status(403).send({ message: 'Cannot delete card after 5 minutes' })
 		}
 		await Card.deleteOne({ _id: cardToDelete._id })
+		return res.status(204).send()
 	} catch (error) {
 		console.error(error)
 		res.status(500).send({ message: 'Internal Server Error' })
