@@ -37,11 +37,11 @@ const swaggerOptions = {
 		},
 		servers: [
 			{
-				url: 'http://localhost:4000'
-			}
-		]
+				url: 'http://localhost:4000',
+			},
+		],
 	},
-	apis: ['/routes/*.js'],
+	apis: ['/routes/*.ts'],
 }
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions)
