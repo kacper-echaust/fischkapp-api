@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import { Card } from './models/cardSchema'
 import express from 'express'
-export const app = express()
 import cors from 'cors'
+import swaggerUi from 'swagger-ui-express'
+import swaggerJsdoc from 'swagger-jsdoc'
+export const app = express()
+
+const allowedOrigin = process.env.ALLOWED_ORIGIN
 
 const checkAuthorization = (req: Request, res: Response, next: NextFunction) => {
 	const authorizationHeader = req.get('Authorization')
@@ -13,8 +17,6 @@ const checkAuthorization = (req: Request, res: Response, next: NextFunction) => 
 		res.status(401).send('Unauthorized')
 	}
 }
-app.use(checkAuthorization)
-const allowedOrigin = process.env.ALLOWED_ORIGIN
 const corsOptions = {
 	origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
 		if (origin === allowedOrigin) {
@@ -25,6 +27,27 @@ const corsOptions = {
 	},
 }
 
+const swaggerOptions = {
+	definition: {
+		openapi: '3.0.0',
+		info: {
+			title: 'API Fishkapp',
+			version: '1.0.0',
+			description: 'API Documentation for our application',
+		},
+		servers: [
+			{
+				url: 'http://localhost:4000',
+			},
+		],
+	},
+	apis: ['/routes/*.ts'],
+}
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions)
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
+app.use(checkAuthorization)
 app.use(cors(corsOptions))
 app.use(express.json())
 app.post('/card', async (req, res) => {
