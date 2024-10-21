@@ -1,9 +1,16 @@
 import request from 'supertest'
 import { app } from '../index'
 import { initialCardsMock } from './test-setup'
+import { Card } from '../models/cardSchema'
+import { ObjectId } from 'mongodb'
 
 const AUTHORIZATION_KEY = 'pss-this-is-my-secret'
-const newData = { front: 'front', back: 'back', author: 'author', tags: ['tag1', 'tag2'] }
+const newData = {
+	front: 'front',
+	back: 'back',
+	author: 'author',
+	tags: ['tag1', 'tag2'],
+}
 describe('flashcards', () => {
 	describe('finding cards', () => {
 		describe('get all cards route', () => {
@@ -85,6 +92,32 @@ describe('flashcards', () => {
 			const data = res.body
 			expect(res.status).toBe(200)
 			expect(data).toMatchObject(newData)
+		})
+	})
+	describe('delete cards', () => {
+		it('function returns code 204 if card was created less than 5 minutes ago and deleted correctly', async () => {
+			const idCardToDelete = new ObjectId(Date.now() - 5000).toString()
+			Card.create({
+				...newData,
+				_id: idCardToDelete,
+				createdAt: new Date().toISOString(),
+			})
+			const res = await request(app).delete(`/cards/${idCardToDelete}`).set('Authorization', AUTHORIZATION_KEY)
+			expect(res.status).toBe(204)
+			expect(res.body).toEqual({})
+		})
+		it('function returns status code 403 if the flachcard was created more than 5 minutes ago', async () => {
+			const res = await request(app)
+				.delete(`/cards/${initialCardsMock[0]._id}`)
+				.set('Authorization', AUTHORIZATION_KEY)
+
+			expect(res.status).toBe(403)
+		})
+		it('function returns status code 404 if the requested flashcard does not exist', async () => {
+			const idNotExistingCard = new ObjectId(Date.now() - 5000).toString()
+			const res = await request(app).delete(`/cards/${idNotExistingCard}`).set('Authorization', AUTHORIZATION_KEY)
+
+			expect(res.status).toBe(404)
 		})
 	})
 })
