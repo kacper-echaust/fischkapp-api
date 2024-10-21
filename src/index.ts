@@ -41,6 +41,21 @@ const swaggerOptions = {
 			},
 		],
 	},
+	components: {
+		securitySchemes: {
+			bearerAuth: {
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'JWT',
+			},
+		},
+	},
+	security: [
+		{
+			bearerAuth: [],
+		},
+	],
+
 	apis: ['/routes/*.ts'],
 }
 
@@ -50,6 +65,29 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use(checkAuthorization)
 app.use(cors(corsOptions))
 app.use(express.json())
+
+/**
+ * @swagger
+ * paths:
+ * /card:
+ * 	post:
+ * 		summary: Add new card
+ * 		description: Add new card
+ * 		security:
+ * 		- bearerAuth: []
+ * 		responses:
+ * 		201:
+ * 			description: Succesfully added card
+ * content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ * 		400:
+ * 			description: Card already exist
+ * 		401:
+ * 			description: Unauthorized
+ *
+ */
 app.post('/card', async (req, res) => {
 	try {
 		const existingCard = await Card.find({ front: req.body.front })
@@ -60,6 +98,30 @@ app.post('/card', async (req, res) => {
 		console.error(error)
 	}
 })
+/**
+ * @swagger
+ * paths:
+ * /card/:id:
+ * 	put:
+ * 		summary: Update card
+ * 		description: Update existing card
+ * 		security:
+ * 		- bearerAuth: []
+ * 		responses:
+ * 		200:
+ * 			description: Succesfull update card
+ * 		content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ * 		404:
+ * 			description: Card not found
+ * 		500:
+ * 			description: Internal server error
+ * 		401:
+ * 			description: Unauthorized
+ *
+ */
 app.put('/cards/:id', async (req, res) => {
 	try {
 		const { front, back, tags, author } = req.body
@@ -74,7 +136,22 @@ app.put('/cards/:id', async (req, res) => {
 		res.status(500).send({ message: 'Internal server error' })
 	}
 })
-
+/**
+ * @swagger
+ * paths:
+ * /cards:
+ * 	get:
+ * 		summary: Get cards
+ * 		description: Get all cards
+ * 		security:
+ * 		- bearerAuth: []
+ * 		responses:
+ * 		500:
+ * 			description: Internal server error
+ * 		401:
+ * 			description: Unauthorized
+ *
+ */
 app.get('/cards', async (req, res) => {
 	try {
 		const cards = await Card.find({}).sort({ timestamps: -1 })
@@ -84,6 +161,22 @@ app.get('/cards', async (req, res) => {
 		res.status(500).send('Internal Server Error')
 	}
 })
+/**
+ * @swagger
+ * paths:
+ * /cards/author/:author:
+ * 	get:
+ * 		summary: Get cards
+ * 		description: Get cards by author route
+ * 		security:
+ * 		- bearerAuth: []
+ * 		responses:
+ * 		500:
+ * 			description: Internal server error
+ * 		401:
+ * 			description: Unauthorized
+ *
+ */
 app.get('/cards/author/:author', async (req, res) => {
 	try {
 		const cards = await Card.find({ author: req.params.author }).sort({ timestamps: -1 })
@@ -93,6 +186,22 @@ app.get('/cards/author/:author', async (req, res) => {
 		res.status(500).send('Internal Server Error')
 	}
 })
+/**
+ * @swagger
+ * paths:
+ * /cards/tags/:tag:
+ * 	get:
+ * 		summary: Get cards
+ * 		description: Get cards by tag route
+ * 		security:
+ * 		- bearerAuth: []
+ * 		responses:
+ * 		500:
+ * 			description: Internal server error
+ * 		401:
+ * 			description: Unauthorized
+ *
+ */
 app.get('/cards/tags/:tag', async (req, res) => {
 	try {
 		const cards = await Card.find({ tags: req.params.tag }).sort({ timestamps: -1 })
@@ -102,6 +211,28 @@ app.get('/cards/tags/:tag', async (req, res) => {
 		res.status(500).send('Internal Server Error')
 	}
 })
+/**
+ * @swagger
+ * paths:
+ * /cards/:id:
+ * 	delete:
+ * 		summary: Delete card
+ * 		description: Delete card by id
+ * 		security:
+ * 		- bearerAuth: []
+ * 		responses:
+ * 		204:
+ * 			description: Card delete succesfully
+ * 		404:
+ * 			description: Not found
+ * 		403:
+ * 			description: Cannot delete card after 5 minutes
+ * 		401:
+ * 			description: Unauthorized
+ * 		500:
+ * 			description: Internal Server Error
+ *
+ */
 app.delete('/cards/:id', async (req, res) => {
 	const fiveMinutes = 5 * 60 * 1000
 	const currentTime = Date.now()
