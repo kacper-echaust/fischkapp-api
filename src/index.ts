@@ -77,7 +77,7 @@ app.use(express.json())
  * 		- bearerAuth: []
  * 		responses:
  * 		201:
- * 			description: Succesfull added card
+ * 			description: Succesfully added card
  * content:
  *           application/json:
  *             schema:
